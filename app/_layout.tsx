@@ -3,11 +3,27 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
+import { useEffect } from 'react';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { GameProvider } from '@/hooks/useGame';
+import mobileAds, { AdsConsent } from 'react-native-google-mobile-ads';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    // 1. Initialize AdMob
+    mobileAds()
+      .initialize()
+      .then(adapterStatuses => {
+        console.log('AdMob SDK Initialized');
+      });
+
+    // 2. Request Tracking Consent (iOS Compliance)
+    AdsConsent.requestInfoUpdate().then(() => {
+      AdsConsent.loadAndShowConsentFormIfRequired();
+    });
+  }, []);
 
   return (
     <GameProvider>

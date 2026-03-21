@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Pressable, Modal, Linking, TextInput } from 'react-native';
+import { StyleSheet, View, Pressable, Modal, Linking, TextInput, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useGame } from '@/hooks/useGame';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -8,8 +8,10 @@ import { ThemedText } from '@/components/themed-text';
 import Constants from 'expo-constants';
 import { Colors } from '@/constants/theme';
 import { PaperBackground } from '@/components/PaperBackground';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 const PLAYER_COLORS = ['#FF5252', '#448AFF', '#4CAF50', '#FFD740'];
+const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : (process.env.EXPO_PUBLIC_AD_UNIT_ID_BANNER || '');
 
 export default function DiceScreen() {
   const { results, isRolling, rollDice, players, currentPlayerIndex, diceCount, setDiceCount, addPlayer, removePlayer } = useGame();
@@ -18,6 +20,7 @@ export default function DiceScreen() {
   const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [namingSlot, setNamingSlot ] = useState<number | null>(null); // For naming modal
   const [tempName, setTempName] = useState('');
+  const [adVisible, setAdVisible] = useState(true); // Control ad container visibility
 
   const renderPlayer = (index: number, positionStyle: any) => {
     const player = players[index];
@@ -146,10 +149,22 @@ export default function DiceScreen() {
         {/* Center Container is now just a pass-through since dice are in the background */}
         <View style={styles.centerContainer} pointerEvents="none" />
 
-        {/* Ad Placeholder for Revenue */}
-        <View style={styles.adPlaceholder}>
-          <ThemedText style={styles.adText}>ADVERTISEMENT</ThemedText>
-        </View>
+        {/* Live Banner Ad */}
+        {adVisible && (
+          <View style={styles.adContainer}>
+            <BannerAd
+              unitId={AD_UNIT_ID}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+              onAdFailedToLoad={(error) => {
+                console.error('Ad failed to load: ', error);
+                setAdVisible(false);
+              }}
+            />
+          </View>
+        )}
 
         {/* Info Modal */}
         <Modal
@@ -432,20 +447,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxHeight: 400,
   },
-  adPlaceholder: {
+  adContainer: {
     position: 'absolute',
-    bottom: 0, // Absolute bottom
+    bottom: 0,
     width: '100%',
-    height: 40,
-    backgroundColor: 'rgba(0,0,0,0.02)',
+    height: 60,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  adText: {
-    fontSize: 8,
-    color: '#000',
-    opacity: 0.3,
-    letterSpacing: 4,
+    borderTopWidth: 0.5,
+    borderTopColor: 'rgba(0,0,0,0.1)',
   },
   floatingInfoButton: {
     position: 'absolute',
