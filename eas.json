@@ -1,0 +1,32 @@
+{
+  "cli": {
+    "version": ">= 18.4.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_ANDROID_APP_ID": "ca-app-pub-5803323150390487~6024545613",
+        "EXPO_PUBLIC_AD_UNIT_ID_BANNER": "ca-app-pub-5803323150390487/7595679984"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_ANDROID_APP_ID": "ca-app-pub-5803323150390487~6024545613",
+        "EXPO_PUBLIC_AD_UNIT_ID_BANNER": "ca-app-pub-5803323150390487/7595679984"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

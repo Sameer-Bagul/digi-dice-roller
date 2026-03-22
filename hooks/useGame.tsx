@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import * as Haptics from 'expo-haptics';
+import { Platform } from 'react-native';
 
 type DiceValue = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -78,11 +79,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     setIsRolling(true);
     // Initial impact
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }
     
     // Subtle vibrations during the roll
     const hapticInterval = setInterval(() => {
-      Haptics.selectionAsync();
+      if (Platform.OS !== 'web') {
+        Haptics.selectionAsync();
+      }
     }, 150);
 
     // Simulate roll duration
@@ -95,7 +100,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsRolling(false);
       
       // Final landing haptic
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      if (Platform.OS !== 'web') {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
       
       // Switch to next VALID player
       setCurrentPlayerIndex((prev) => {

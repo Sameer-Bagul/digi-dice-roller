@@ -1,6 +1,7 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { Platform } from 'react-native';
 import 'react-native-reanimated';
 
 import { useEffect } from 'react';
@@ -12,17 +13,19 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   useEffect(() => {
-    // 1. Initialize AdMob
-    mobileAds()
-      .initialize()
-      .then(adapterStatuses => {
-        console.log('AdMob SDK Initialized');
-      });
+    // 1. Initialize AdMob (Only on Native platforms)
+    if (Platform.OS !== 'web') {
+      mobileAds()
+        .initialize()
+        .then(adapterStatuses => {
+          console.log('AdMob SDK Initialized');
+        });
 
-    // 2. Request Tracking Consent (iOS Compliance)
-    AdsConsent.requestInfoUpdate().then(() => {
-      AdsConsent.loadAndShowConsentFormIfRequired();
-    });
+      // 2. Request Tracking Consent (iOS Compliance)
+      AdsConsent.requestInfoUpdate().then(() => {
+        AdsConsent.loadAndShowConsentFormIfRequired();
+      });
+    }
   }, []);
 
   return (

@@ -62,7 +62,11 @@
       "reactCompiler": true
     },
     "extra": {
-      "privacyPolicyUrl": "https://example.com/privacy-policy"
+      "privacyPolicyUrl": "https://gist.githubusercontent.com/Sameer-Bagul/2c3263996eee335103760156f80d2339/raw",
+      "router": {},
+      "eas": {
+        "projectId": "3686ef45-15b8-432c-8580-e566df6b8947"
+      }
     }
   }
 }

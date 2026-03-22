@@ -8,7 +8,7 @@ import { ThemedText } from '@/components/themed-text';
 import Constants from 'expo-constants';
 import { Colors } from '@/constants/theme';
 import { PaperBackground } from '@/components/PaperBackground';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+import { AdBanner } from '@/components/AdBanner';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
@@ -20,7 +20,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 const PLAYER_COLORS = ['#FF5252', '#448AFF', '#4CAF50', '#FFD740'];
-const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : (process.env.EXPO_PUBLIC_AD_UNIT_ID_BANNER || '');
 
 export default function DiceScreen() {
   const { results, isRolling, rollDice, players, currentPlayerIndex, diceCount, setDiceCount, addPlayer, removePlayer } = useGame();
@@ -190,21 +189,13 @@ export default function DiceScreen() {
         <View style={styles.centerContainer} pointerEvents="none" />
 
         {/* Live Banner Ad */}
-        {adVisible && (
-          <View style={styles.adContainer}>
-            <BannerAd
-              unitId={AD_UNIT_ID}
-              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-              requestOptions={{
-                requestNonPersonalizedAdsOnly: true,
-              }}
-              onAdFailedToLoad={(error) => {
-                console.error('Ad failed to load: ', error);
-                setAdVisible(false);
-              }}
-            />
-          </View>
-        )}
+        <AdBanner 
+          visible={adVisible} 
+          onError={(error) => {
+            console.error('Ad failed to load: ', error);
+            setAdVisible(false);
+          }} 
+        />
 
         {/* Info Modal */}
         <Modal
@@ -244,7 +235,7 @@ export default function DiceScreen() {
               </View>
 
               <Pressable 
-                onPress={() => Linking.openURL('https://example.com/privacy-policy')}
+                onPress={() => Linking.openURL(Constants.expoConfig?.extra?.privacyPolicyUrl || 'https://gist.githubusercontent.com/Sameer-Bagul/2c3263996eee335103760156f80d2339/raw')}
                 style={styles.policyButton}
               >
                 <Ionicons name="shield-checkmark-outline" size={18} color="#007AFF" />
