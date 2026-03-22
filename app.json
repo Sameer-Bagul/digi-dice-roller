@@ -13,7 +13,14 @@
     "android": {
       "package": "com.sameerbagul.digidiceroller",
       "versionCode": 1,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "INTERNET"
+      ]
     },
     "web": {
       "output": "static",
@@ -38,6 +45,15 @@
         {
           "androidAppId": "ca-app-pub-5803323150390487~6024545613",
           "iosAppId": "ca-app-pub-5803323150390487~6024545613"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "targetSdkVersion": 35,
+            "compileSdkVersion": 35
+          }
         }
       ]
     ],

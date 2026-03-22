@@ -9,6 +9,15 @@ import Constants from 'expo-constants';
 import { Colors } from '@/constants/theme';
 import { PaperBackground } from '@/components/PaperBackground';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withRepeat, 
+  withSequence, 
+  withTiming,
+  useAnimatedReaction,
+  runOnJS
+} from 'react-native-reanimated';
 
 const PLAYER_COLORS = ['#FF5252', '#448AFF', '#4CAF50', '#FFD740'];
 const AD_UNIT_ID = __DEV__ ? TestIds.BANNER : (process.env.EXPO_PUBLIC_AD_UNIT_ID_BANNER || '');
@@ -21,6 +30,37 @@ export default function DiceScreen() {
   const [namingSlot, setNamingSlot ] = useState<number | null>(null); // For naming modal
   const [tempName, setTempName] = useState('');
   const [adVisible, setAdVisible] = useState(true); // Control ad container visibility
+  
+  // Screen Shake Animation
+  const shakeOffset = useSharedValue(0);
+
+  const startShake = () => {
+    shakeOffset.value = withRepeat(
+      withSequence(
+        withTiming(-5, { duration: 50 }),
+        withTiming(5, { duration: 50 })
+      ),
+      10, // Repeat 10 times during the 1s roll
+      true
+    );
+  };
+
+  const stopShake = () => {
+    shakeOffset.value = withTiming(0, { duration: 50 });
+  };
+
+  const animatedShakeStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: shakeOffset.value }],
+  }));
+
+  // Trigger shake when isRolling changes
+  React.useEffect(() => {
+    if (isRolling) {
+      startShake();
+    } else {
+      stopShake();
+    }
+  }, [isRolling]);
 
   const renderPlayer = (index: number, positionStyle: any) => {
     const player = players[index];
@@ -93,7 +133,7 @@ export default function DiceScreen() {
         <DiceBoard results={results} isRolling={isRolling} />
       </View>
 
-      <View style={styles.container}>
+      <Animated.View style={[styles.container, animatedShakeStyle]}>
         {/* 4 Corners for Players - TOUCHING THE CORNER */}
         {renderPlayer(0, styles.topLeft)}
         {renderPlayer(1, styles.topRight)}
@@ -249,7 +289,7 @@ export default function DiceScreen() {
           </View>
         </View>
       </Modal>
-      </View>
+      </Animated.View>
     </PaperBackground>
   );
 }

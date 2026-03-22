@@ -19,6 +19,7 @@
     "@react-three/fiber": "^9.5.0",
     "expo": "~54.0.33",
     "expo-asset": "^55.0.10",
+    "expo-build-properties": "~1.0.10",
     "expo-constants": "~18.0.13",
     "expo-dev-client": "~6.0.20",
     "expo-file-system": "^55.0.11",

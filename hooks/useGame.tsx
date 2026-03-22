@@ -77,15 +77,25 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (isRolling) return;
     
     setIsRolling(true);
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    // Initial impact
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    
+    // Subtle vibrations during the roll
+    const hapticInterval = setInterval(() => {
+      Haptics.selectionAsync();
+    }, 150);
 
     // Simulate roll duration
     setTimeout(() => {
+      clearInterval(hapticInterval);
       const newResults = Array.from({ length: diceCount }, () => 
         (Math.floor(Math.random() * 6) + 1) as DiceValue
       );
       setResults(newResults);
       setIsRolling(false);
+      
+      // Final landing haptic
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       
       // Switch to next VALID player
       setCurrentPlayerIndex((prev) => {
