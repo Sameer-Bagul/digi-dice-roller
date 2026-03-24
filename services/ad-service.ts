@@ -1,15 +1,19 @@
-import mobileAds, { AdsConsent } from 'react-native-google-mobile-ads';
+import mobileAds, { AdsConsent } from "react-native-google-mobile-ads";
 
-export const initializeAds = () => {
-    // 1. Initialize AdMob
-    mobileAds()
-      .initialize()
-      .then(adapterStatuses => {
-        console.log('AdMob SDK Initialized');
-      });
+export const initializeAds = async (): Promise<void> => {
+  try {
+    await mobileAds().initialize();
+    console.log("AdMob SDK Initialized");
+  } catch (error) {
+    console.warn("AdMob SDK initialization failed:", error);
+    return;
+  }
 
-    // 2. Request Tracking Consent (iOS Compliance)
-    AdsConsent.requestInfoUpdate().then(() => {
-      AdsConsent.loadAndShowConsentFormIfRequired();
-    });
+  try {
+    await AdsConsent.requestInfoUpdate();
+    await AdsConsent.loadAndShowConsentFormIfRequired();
+  } catch (error) {
+    // Consent errors should never block app startup.
+    console.warn("Ad consent flow failed:", error);
+  }
 };

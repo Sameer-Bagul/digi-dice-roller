@@ -18,9 +18,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "INTERNET"
-      ]
+      "permissions": ["INTERNET", "com.google.android.gms.permission.AD_ID"]
     },
     "web": {
       "output": "static",
@@ -59,7 +57,7 @@
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": false
     },
     "extra": {
       "privacyPolicyUrl": "https://gist.githubusercontent.com/Sameer-Bagul/2c3263996eee335103760156f80d2339/raw",
